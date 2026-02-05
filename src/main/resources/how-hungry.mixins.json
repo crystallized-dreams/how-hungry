@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "ru.alexalabai.howhungry.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"ClientPlayerEntityMixin",
+		"HungerManagerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

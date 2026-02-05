@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 1,
+	"id": "how-hungry",
+	"version": "${version}",
+	"name": "How Hungry?",
+	"description": "Modify hunger system as much as you want.",
+	"authors": [
+		"Alex Alabai"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/how-hungry/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["ru.alexalabai.howhungry.HowHungry"],
+		"modmenu": ["ru.alexalabai.howhungry.config.ModMenuIntegration"]
+	},
+	"mixins": [
+		"how-hungry.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}
