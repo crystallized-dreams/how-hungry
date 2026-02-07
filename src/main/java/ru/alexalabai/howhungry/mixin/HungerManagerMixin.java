@@ -15,9 +15,13 @@ public class HungerManagerMixin {
     @Shadow
     private int foodLevel;
 
+    @Inject(method="update",at=@At("HEAD"),cancellable=true)
+    void dontWorkIfNotNeeded(PlayerEntity player, CallbackInfo info) {
+        if(ModConfig.INSTANCE.enabled&&!ModConfig.INSTANCE.hungerEnabled) info.cancel();
+    }
     @Inject(method="update",at=@At(value="INVOKE",target="Lnet/minecraft/entity/player/PlayerEntity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"),cancellable=true)
     void dontDamage(PlayerEntity player, CallbackInfo info) {
         if(!ModConfig.INSTANCE.enabled) return;
-        if(!ModConfig.INSTANCE.hungerCanDamage) info.cancel();
+        if(!ModConfig.INSTANCE.hungerCanDamage||!ModConfig.INSTANCE.hungerEnabled) info.cancel();
     }
 }

@@ -1,0 +1,30 @@
+{
+  "config.how-hungry.title": "How Hungry? Config",
+
+  "config.how-hungry.client": "Client",
+  "config.how-hungry.client.render_hunger_bar": "Render hunger bar",
+
+  "config.how-hungry.server": "Server",
+  "config.how-hungry.server.enabled": "Enabled",
+  "config.how-hungry.server.hunger_enabled": "[WIP] Hunger enabled",
+  "config.how-hungry.server.hunger_enabled.tooltip": "Does hunger system even need to work?",
+  "config.how-hungry.server.min_run_hunger": "Hunger points needed to run",
+  "config.how-hungry.server.min_run_hunger.tooltip": "How much hunger points (2 points=1 chicken leg) is needed to run (-1 to not disable running)",
+  "config.how-hungry.server.hunger_damage": "Can hunger damage",
+  "config.how-hungry.server.negative_effects": "Give negative effects",
+  "config.how-hungry.server.negative_effects.tooltip": "Applies a random negative effect if player is hungry",
+  "config.how-hungry.server.negative_effects.apply_when_running": "Apply only when running",
+  "config.how-hungry.server.negative_effects.apply_when_running.tooltip": "Applies negative effects on player only if they're running",
+  "config.how-hungry.server.negative_effects.hunger_needed": "Apply effects after",
+  "config.how-hungry.server.negative_effects.hunger_needed.tooltip": "How much hunger points (2 points=1 chicken leg) is needed to apply negative effects",
+  "config.how-hungry.server.negative_effects.cooldown": "Negative effects cooldown",
+  "config.how-hungry.server.negative_effects.cooldown.tooltip": "How much to wait before applying next negative effect (in ticks)",
+  "config.how-hungry.server.negative_effects.duration": "Effect duration",
+  "config.how-hungry.server.negative_effects.duration.tooltip": "How much the negative effect lasts (in ticks)",
+  "config.how-hungry.server.negative_effects.values": "Effects",
+
+  "text.how-hungry.hunger_disabled": "[how-hungry]: Hunger is disabled on this server",
+
+  "modmenu.summaryTranslation.how-hungry": "Modify hunger system as much as you want.",
+  "modmenu.descriptionTranslation.how-hungry": "Allows you to disable hunger entirely or change it's behaviour quite drastically:\n- change amount of saturation needed to run\n- does hunger do damage\n- what effects apply to player if they're hungry"
+}

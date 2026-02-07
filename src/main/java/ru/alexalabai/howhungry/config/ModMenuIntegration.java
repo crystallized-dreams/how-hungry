@@ -10,9 +10,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import ru.alexalabai.howhungry.HowHungry;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -23,80 +26,96 @@ public class ModMenuIntegration implements ModMenuApi {
         return parent -> {
             ConfigBuilder builder = ConfigBuilder.create()
                     .setParentScreen(parent)
-                    .setTitle(Text.of("How hungry?"));
-
+                    .setTitle(Text.translatable("config.how-hungry.title"));
 
             /// CLIENT CATEGORY ///
-            ConfigCategory clientCtg = builder.getOrCreateCategory(Text.of("Client"));
+            ConfigCategory clientCtg = builder.getOrCreateCategory(Text.translatable("config.how-hungry.client"));
             clientCtg.addEntry(builder.entryBuilder()
-                    .startBooleanToggle(Text.of("Render hunger bar"), ModClientConfig.INSTANCE.drawHunger)
+                    .startBooleanToggle(Text.translatable("config.how-hungry.client.render_hunger_bar"), ModClientConfig.INSTANCE.drawHunger)
                     .setDefaultValue(true)
                     .setSaveConsumer(val->ModClientConfig.INSTANCE.drawHunger=val)
                     .build());
 
             /// SERVER BASE CATEGORY ///
-            ConfigCategory serverCtg = builder.getOrCreateCategory(Text.of("Server"));
+            ConfigCategory serverCtg = builder.getOrCreateCategory(Text.translatable("config.how-hungry.server"));
             serverCtg.addEntry(builder.entryBuilder()
-                    .startBooleanToggle(Text.of("Enabled"), ModConfig.INSTANCE.enabled)
+                    .startBooleanToggle(Text.translatable("config.how-hungry.server.enabled"), ModConfig.INSTANCE.enabled)
                     //.setTooltip(Text.of(""))
                     .setDefaultValue(true)
                     .setSaveConsumer(val->ModConfig.INSTANCE.enabled=val)
                     .build());
-            if(ModConfig.INSTANCE.enabled) {
+            serverCtg.addEntry(builder.entryBuilder()
+                    .startBooleanToggle(Text.translatable("config.how-hungry.server.hunger_enabled"), ModConfig.INSTANCE.hungerEnabled)
+                    .setTooltip(Text.translatable("config.how-hungry.server.hunger_enabled.tooltip"))
+                    .setDefaultValue(true)
+                    .setSaveConsumer(val->ModConfig.INSTANCE.hungerEnabled=val)
+                    .build());
+            if(ModConfig.INSTANCE.enabled&&ModConfig.INSTANCE.hungerEnabled) {
                 serverCtg.addEntry(builder.entryBuilder()
-                        .startIntField(Text.of("Minimal run hunger"), ModConfig.INSTANCE.disableRunningAfterHunger)
-                        .setTooltip(Text.of("How much hunger points (2 points=1 chicken leg) is needed to run (-1 to not disable running, 20 is max)"))
+                        .startIntField(Text.translatable("config.how-hungry.server.min_run_hunger"), ModConfig.INSTANCE.disableRunningAfterHunger)
+                        .setTooltip(Text.translatable("config.how-hungry.server.min_run_hunger.tooltip"))
                         .setDefaultValue(6)
+                        .setMin(-1).setMax(20)
                         .setSaveConsumer(val -> ModConfig.INSTANCE.disableRunningAfterHunger = val)
                         .build());
                 serverCtg.addEntry(builder.entryBuilder()
-                        .startBooleanToggle(Text.of("Can hunger damage"), ModConfig.INSTANCE.hungerCanDamage)
+                        .startBooleanToggle(Text.translatable("config.how-hungry.server.hunger_damage"), ModConfig.INSTANCE.hungerCanDamage)
                         //.setTooltip(Text.of(""))
                         .setDefaultValue(true)
                         .setSaveConsumer(val -> ModConfig.INSTANCE.hungerCanDamage = val)
                         .build());
                 serverCtg.addEntry(builder.entryBuilder()
-                        .startBooleanToggle(Text.of("Give negative effects"), ModConfig.INSTANCE.giveNegativeEffects)
-                        .setTooltip(Text.of("Applies random negative effect if player is hungry"))
+                        .startBooleanToggle(Text.translatable("config.how-hungry.server.negative_effects"), ModConfig.INSTANCE.giveNegativeEffects)
+                        .setTooltip(Text.translatable("config.how-hungry.server.negative_effects.tooltip"))
                         .setDefaultValue(false)
                         .setSaveConsumer(val -> ModConfig.INSTANCE.giveNegativeEffects = val)
                         .build());
                 if (ModConfig.INSTANCE.giveNegativeEffects) {
                     serverCtg.addEntry(builder.entryBuilder()
-                            .startIntField(Text.of("Maximal negative effect hunger"), ModConfig.INSTANCE.giveNegativeEffectsAfterHunger)
-                            .setTooltip(Text.of("How much hunger points (2 points=1 chicken leg) is needed to apply negative effects (20 is max)"))
+                            .startBooleanToggle(Text.translatable("config.how-hungry.server.negative_effects.apply_when_running"), ModConfig.INSTANCE.giveNegativeEffectsOnlyWhenRunning)
+                            //.setTooltip(Text.translatable("config.config.how-hungry.server.negative_effects.apply_when_running.tooltip"))
+                            .setDefaultValue(false)
+                            .setSaveConsumer(val -> ModConfig.INSTANCE.giveNegativeEffectsOnlyWhenRunning = val)
+                            .build());
+                    serverCtg.addEntry(builder.entryBuilder()
+                            .startIntField(Text.translatable("config.how-hungry.server.negative_effects.hunger_needed"), ModConfig.INSTANCE.giveNegativeEffectsAfterHunger)
+                            .setTooltip(Text.translatable("config.how-hungry.server.negative_effects.hunger_needed.tooltip"))
                             .setDefaultValue(6)
+                            .setMin(0).setMax(20)
                             .setSaveConsumer(val -> ModConfig.INSTANCE.giveNegativeEffectsAfterHunger = val)
                             .build());
                     serverCtg.addEntry(builder.entryBuilder()
-                            .startIntField(Text.of("Negative effects cooldown"), ModConfig.INSTANCE.negativeEffectCooldown)
-                            .setTooltip(Text.of("How much to wait before applying next negative effect (in ticks)"))
+                            .startIntField(Text.translatable("config.how-hungry.server.negative_effects.cooldown"), ModConfig.INSTANCE.negativeEffectCooldown)
+                            .setTooltip(Text.translatable("config.how-hungry.server.negative_effects.cooldown.tooltip"))
                             .setDefaultValue(20 * 60 * 5)
+                            .setMin(1)
                             .setSaveConsumer(val -> ModConfig.INSTANCE.negativeEffectCooldown = val)
                             .build());
                     serverCtg.addEntry(builder.entryBuilder()
-                            .startIntField(Text.of("Effects time"), ModConfig.INSTANCE.effectTime)
-                            .setTooltip(Text.of("How much negative effect lasts (in ticks)"))
+                            .startIntField(Text.translatable("config.how-hungry.server.negative_effects.duration"), ModConfig.INSTANCE.effectTime)
+                            .setTooltip(Text.translatable("config.how-hungry.server.negative_effects.duration.tooltip"))
                             .setDefaultValue(20 * 5)
+                            .setMin(1)
                             .setSaveConsumer(val -> ModConfig.INSTANCE.effectTime = val)
                             .build());
                     serverCtg.addEntry(builder.entryBuilder()
-                            .startBooleanToggle(Text.of("Can give blindness"), ModConfig.INSTANCE.canGiveBlindness)
-                            //.setTooltip(Text.of(""))
-                            .setDefaultValue(true)
-                            .setSaveConsumer(val -> ModConfig.INSTANCE.canGiveBlindness = val)
-                            .build());
-                    serverCtg.addEntry(builder.entryBuilder()
-                            .startBooleanToggle(Text.of("Can give darkness"), ModConfig.INSTANCE.canGiveDarkness)
-                            //.setTooltip(Text.of(""))
-                            .setDefaultValue(true)
-                            .setSaveConsumer(val -> ModConfig.INSTANCE.canGiveDarkness = val)
-                            .build());
-                    serverCtg.addEntry(builder.entryBuilder()
-                            .startBooleanToggle(Text.of("Can give nausea"), ModConfig.INSTANCE.canGiveNausea)
-                            //.setTooltip(Text.of(""))
-                            .setDefaultValue(true)
-                            .setSaveConsumer(val -> ModConfig.INSTANCE.canGiveNausea = val)
+                            .startStrList(Text.translatable("config.how-hungry.server.negative_effects.values"),ModConfig.INSTANCE.negativeEffects)
+                                    .setSaveConsumer(val->{
+                                        for(String possibleEffect : val) {
+                                            Identifier id=Identifier.tryParse(possibleEffect);
+                                            if(id==null) {
+                                                HowHungry.LOGGER.info(HowHungry.invalidEffect,possibleEffect);
+                                                val.remove(possibleEffect);
+                                                continue;
+                                            }
+                                            if(Registries.STATUS_EFFECT.get(id)==null) {
+                                                HowHungry.LOGGER.info(HowHungry.invalidEffect,possibleEffect);
+                                                val.remove(possibleEffect);
+                                            }
+                                        }
+                                        ModConfig.INSTANCE.negativeEffects=val;
+                                    })
+                            .setDefaultValue(List.of("minecraft:blindness","minecraft:darkness","minecraft:nausea"))
                             .build());
                 }
             }
