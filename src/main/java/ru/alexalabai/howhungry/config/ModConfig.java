@@ -4,9 +4,14 @@ import java.util.List;
 
 public class ModConfig {
     public boolean enabled=true;
+    public boolean requireOnClient=false;
     public boolean hungerEnabled=true;
+    public boolean foodRestoreHealth=true;
     public int disableRunningAfterHunger=6;
     public boolean hungerCanDamage=true;
+    public int damageAfterHunger=0;
+    public boolean hungerCanHeal=true;
+    public int healAfterHunger=18;
     public boolean giveNegativeEffects=false;
     public boolean giveNegativeEffectsOnlyWhenRunning=false;
     public int giveNegativeEffectsAfterHunger=6;

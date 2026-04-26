@@ -6,11 +6,19 @@
 
   "config.how-hungry.server": "Сервер",
   "config.how-hungry.server.enabled": "Включён",
-  "config.how-hungry.server.hunger_enabled": "[WIP] Включён ли голод",
+  "config.how-hungry.server.hunger_enabled": "Включена ли система голода",
   "config.how-hungry.server.hunger_enabled.tooltip": "Должна ли система голода работать вообще?",
+  "config.how-hungry.server.send_info_to_client": "Требовать на клиенте",
+  "config.how-hungry.server.send_info_to_client.tooltip": "Должен ли сервер отправлять конфиг клиенту (если отключено, то ванильные клиенты могут играть на сервере).",
+  "config.how-hungry.server.food_restore_health": "Восстанавливает ли еда здоровье?",
   "config.how-hungry.server.min_run_hunger": "Минимальная сытость для бега",
   "config.how-hungry.server.min_run_hunger.tooltip": "Сколько сытости (2 сытости=1 куриная ножка) необходимо для бега (-1 для того, чтобы не выключать бег)",
   "config.how-hungry.server.hunger_damage": "Урон от голода",
+  "config.how-hungry.server.hunger_after_damage": "Давать урон по достижению",
+  "config.how-hungry.server.hunger_after_damage.tooltip": "Насколько низок должен быть уровень голода, чтобы игрок получал урон",
+  "config.how-hungry.server.hunger_heal": "Может ли насыщение исцелить",
+  "config.how-hungry.server.hunger_after_heal": "Исцелять по достижению",
+  "config.how-hungry.server.hunger_after_heal.tooltip": "Насколько высок должен быть уровень голода, чтобы игрок восстанавливал ХП",
   "config.how-hungry.server.negative_effects": "Выдавать негативные эффекты",
   "config.how-hungry.server.negative_effects.tooltip": "Выдаёт случайный негативный эффект, если игрок голоден",
   "config.how-hungry.server.negative_effects.apply_when_running": "Применять только из-за бега",
@@ -23,7 +31,7 @@
   "config.how-hungry.server.negative_effects.duration.tooltip": "Сколько эффект должен длится (в тиках)",
   "config.how-hungry.server.negative_effects.values": "Эффекты",
 
-  "text.how-hungry.hunger_disabled": "[how-hungry]: на данном сервере выключен голод",
+  "text.how-hungry.hunger_disabled": "[how-hungry]: На данном сервере выключен голод",
 
   "modmenu.summaryTranslation.how-hungry": "Настройте систему голода как хотите.",
   "modmenu.descriptionTranslation.how-hungry": "Позволяет полностью отключить голод или кардинально изменить его поведение:\n- Количество насыщения, необходимое для бега\n- Наносит ли голод урон\n- Какие эффекты применяются к игроку, если тот голоден"

@@ -45,25 +45,63 @@ public class ModMenuIntegration implements ModMenuApi {
                     .setSaveConsumer(val->ModConfig.INSTANCE.enabled=val)
                     .build());
             serverCtg.addEntry(builder.entryBuilder()
+                    .startBooleanToggle(Text.translatable("config.how-hungry.server.send_info_to_client"), ModConfig.INSTANCE.requireOnClient)
+                    .setTooltip(Text.translatable("config.how-hungry.server.send_info_to_client.tooltip"))
+                    .setDefaultValue(false)
+                    .setSaveConsumer(val->ModConfig.INSTANCE.requireOnClient=val)
+                    .build());
+            serverCtg.addEntry(builder.entryBuilder()
                     .startBooleanToggle(Text.translatable("config.how-hungry.server.hunger_enabled"), ModConfig.INSTANCE.hungerEnabled)
                     .setTooltip(Text.translatable("config.how-hungry.server.hunger_enabled.tooltip"))
                     .setDefaultValue(true)
                     .setSaveConsumer(val->ModConfig.INSTANCE.hungerEnabled=val)
                     .build());
-            if(ModConfig.INSTANCE.enabled&&ModConfig.INSTANCE.hungerEnabled) {
+            if(ModConfig.INSTANCE.enabled&&!ModConfig.INSTANCE.hungerEnabled) {
                 serverCtg.addEntry(builder.entryBuilder()
-                        .startIntField(Text.translatable("config.how-hungry.server.min_run_hunger"), ModConfig.INSTANCE.disableRunningAfterHunger)
-                        .setTooltip(Text.translatable("config.how-hungry.server.min_run_hunger.tooltip"))
-                        .setDefaultValue(6)
-                        .setMin(-1).setMax(20)
-                        .setSaveConsumer(val -> ModConfig.INSTANCE.disableRunningAfterHunger = val)
+                        .startBooleanToggle(Text.translatable("config.how-hungry.server.food_restore_health"), ModConfig.INSTANCE.foodRestoreHealth)
+                        //.setTooltip(Text.translatable("config.how-hungry.server.food_restore_health.tooltip"))
+                        .setDefaultValue(true)
+                        .setSaveConsumer(val->ModConfig.INSTANCE.foodRestoreHealth=val)
                         .build());
+            }
+            if(ModConfig.INSTANCE.enabled&&ModConfig.INSTANCE.hungerEnabled) {
+                if(ModConfig.INSTANCE.requireOnClient) {
+                    serverCtg.addEntry(builder.entryBuilder()
+                            .startIntField(Text.translatable("config.how-hungry.server.min_run_hunger"), ModConfig.INSTANCE.disableRunningAfterHunger)
+                            .setTooltip(Text.translatable("config.how-hungry.server.min_run_hunger.tooltip"))
+                            .setDefaultValue(6)
+                            .setMin(-1).setMax(20)
+                            .setSaveConsumer(val -> ModConfig.INSTANCE.disableRunningAfterHunger = val)
+                            .build());
+                }
                 serverCtg.addEntry(builder.entryBuilder()
                         .startBooleanToggle(Text.translatable("config.how-hungry.server.hunger_damage"), ModConfig.INSTANCE.hungerCanDamage)
                         //.setTooltip(Text.of(""))
                         .setDefaultValue(true)
                         .setSaveConsumer(val -> ModConfig.INSTANCE.hungerCanDamage = val)
                         .build());
+                if(ModConfig.INSTANCE.hungerCanDamage)
+                    serverCtg.addEntry(builder.entryBuilder()
+                            .startIntField(Text.translatable("config.how-hungry.server.hunger_after_damage"), ModConfig.INSTANCE.damageAfterHunger)
+                            .setTooltip(Text.translatable("config.how-hungry.server.hunger_after_damage.tooltip"))
+                            .setDefaultValue(0)
+                            .setMin(0).setMax(20)
+                            .setSaveConsumer(val -> ModConfig.INSTANCE.damageAfterHunger = val)
+                            .build());
+                serverCtg.addEntry(builder.entryBuilder()
+                        .startBooleanToggle(Text.translatable("config.how-hungry.server.hunger_heal"), ModConfig.INSTANCE.hungerCanHeal)
+                        //.setTooltip(Text.of(""))
+                        .setDefaultValue(true)
+                        .setSaveConsumer(val -> ModConfig.INSTANCE.hungerCanHeal = val)
+                        .build());
+                if(ModConfig.INSTANCE.hungerCanHeal)
+                    serverCtg.addEntry(builder.entryBuilder()
+                            .startIntField(Text.translatable("config.how-hungry.server.hunger_after_heal"), ModConfig.INSTANCE.healAfterHunger)
+                            .setTooltip(Text.translatable("config.how-hungry.server.hunger_after_heal.tooltip"))
+                            .setDefaultValue(18)
+                            .setMin(0).setMax(20)
+                            .setSaveConsumer(val -> ModConfig.INSTANCE.healAfterHunger = val)
+                            .build());
                 serverCtg.addEntry(builder.entryBuilder()
                         .startBooleanToggle(Text.translatable("config.how-hungry.server.negative_effects"), ModConfig.INSTANCE.giveNegativeEffects)
                         .setTooltip(Text.translatable("config.how-hungry.server.negative_effects.tooltip"))

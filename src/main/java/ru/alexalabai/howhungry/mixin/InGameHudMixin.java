@@ -16,5 +16,7 @@ public class InGameHudMixin {
                     target="Lnet/minecraft/client/gui/hud/InGameHud;getHeartCount(Lnet/minecraft/entity/LivingEntity;)I")
     )
     @SuppressWarnings("unused")
-    private int hookRenderStatusBars(InGameHud instance, LivingEntity entity, Operation<Integer> original) { return ModClientConfig.INSTANCE.drawHunger ? original.call(instance, entity) : -1; }
+    private int hookRenderStatusBars(InGameHud instance, LivingEntity entity, Operation<Integer> original) {
+        return ModClientConfig.INSTANCE.drawHunger ? original.call(instance, entity) : -1;
+    }
 }

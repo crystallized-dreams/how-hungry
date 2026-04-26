@@ -52,6 +52,9 @@ public class HowHungry implements ModInitializer {
 			if(!ModConfig.INSTANCE.enabled) return;
 			if(!ModConfig.INSTANCE.giveNegativeEffects||!ModConfig.INSTANCE.hungerEnabled) return;
 			for(ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+				if(player.getHungerManager().getFoodLevel()<=6&&!ModConfig.INSTANCE.hungerEnabled) {
+					player.addStatusEffect(new StatusEffectInstance(StatusEffects.SATURATION,20*5,0,true,false,false));
+				}
 				if(player.getHungerManager().getFoodLevel()<=ModConfig.INSTANCE.giveNegativeEffectsAfterHunger&&!(player.isCreative()||player.isSpectator())) {
 					if(HowHungry.effectTimerKeeper.get(player.getUuid())<=0) {
 						HowHungry.effectTimerKeeper.put(player.getUuid(),Math.max(ModConfig.INSTANCE.negativeEffectCooldown,1));
