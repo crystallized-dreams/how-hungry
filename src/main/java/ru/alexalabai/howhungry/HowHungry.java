@@ -8,6 +8,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ public class HowHungry implements ModInitializer {
 				LOGGER.info(invalidEffect,possibleEffect);
 			}
 		}
+		ModPackets.regAll();
 		ServerPlayConnectionEvents.JOIN.register(((serverPlayNetworkHandler, packetSender, minecraftServer) -> {
 			effectTimerKeeper.put(serverPlayNetworkHandler.player.getUuid(),0);
 			ModPackets.sendInfoToPlayer(serverPlayNetworkHandler.player);
@@ -62,11 +64,14 @@ public class HowHungry implements ModInitializer {
 						Identifier id=Identifier.tryParse(ModConfig.INSTANCE.negativeEffects.get(player.getRandom().nextInt(ModConfig.INSTANCE.negativeEffects.size())));
 						if(id==null) return;
 						if(Registries.STATUS_EFFECT.get(id)==null) return;
+						Optional<StatusEffect> effect = Registries.STATUS_EFFECT.getOrEmpty(id);
 
-						player.addStatusEffect(new StatusEffectInstance(
-								Registries.STATUS_EFFECT.get(id),
+						effect.ifPresent(statusEffect->
+							player.addStatusEffect(new StatusEffectInstance(
+                        	        Registries.STATUS_EFFECT.getEntry(statusEffect),
 								Math.max(ModConfig.INSTANCE.effectTime,1),0,
-								false,false,true)
+									false,false,true)
+							)
 						);
 					} else if(!ModConfig.INSTANCE.giveNegativeEffectsOnlyWhenRunning||(ModConfig.INSTANCE.giveNegativeEffectsOnlyWhenRunning&&player.isSprinting()))
 						HowHungry.effectTimerKeeper.put(player.getUuid(), HowHungry.effectTimerKeeper.get(player.getUuid())-1);

@@ -8,10 +8,11 @@ import ru.alexalabai.howhungry.HowHungryClient;
 @Environment(EnvType.CLIENT)
 public class ModClientPackets {
     public static void regAll() {
-        ClientPlayNetworking.registerGlobalReceiver(ModPackets.CONFIG_SYNC_PACKET, (client, handler, buf, responseSender) -> {
-            HowHungryClient.serverEnabled=buf.getBoolean(0);
-            HowHungryClient.serverHungerEnabled=buf.getBoolean(1);
-            HowHungryClient.serverRunHunger=buf.getInt(2);
-        });
+        ClientPlayNetworking.registerGlobalReceiver(ConfigPayload.ID, (payload, ctx)->
+                ctx.client().execute(()->{
+                    HowHungryClient.serverEnabled=payload.serverEnabled();
+                    HowHungryClient.serverHungerEnabled=payload.serverHungerEnabled();
+                    HowHungryClient.serverRunHunger=payload.serverRunHunger();
+                }));
     }
 }

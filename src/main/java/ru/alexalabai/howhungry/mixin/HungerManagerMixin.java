@@ -1,9 +1,9 @@
 package ru.alexalabai.howhungry.mixin;
 
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.FoodComponent;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import ru.alexalabai.howhungry.HowHungry;
 import ru.alexalabai.howhungry.config.ModConfig;
 
 @SuppressWarnings("unused")
@@ -74,13 +73,12 @@ public abstract class HungerManagerMixin {
         }
     }
     @Inject(method = "eat",at = @At("HEAD"), cancellable = true)
-    void eat(Item item, ItemStack stack, CallbackInfo info) {
+    void eat(FoodComponent foodComponent, CallbackInfo info) {
         if(!ModConfig.INSTANCE.hungerEnabled&&ModConfig.INSTANCE.foodRestoreHealth) {
             if(player$how_hungry==null) return;
             info.cancel();
-            if (item.isFood()) {
-                FoodComponent foodComponent = item.getFoodComponent();
-                player$how_hungry.heal(foodComponent.getHunger());
+            if (foodComponent!=null) {
+                player$how_hungry.heal(foodComponent.nutrition());
             }
         }
     }
