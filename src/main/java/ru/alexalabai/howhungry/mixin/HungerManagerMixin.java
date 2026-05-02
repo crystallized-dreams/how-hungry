@@ -5,6 +5,8 @@ import net.minecraft.component.type.FoodComponent;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +21,6 @@ import ru.alexalabai.howhungry.config.ModConfig;
 @Mixin(HungerManager.class)
 public abstract class HungerManagerMixin {
     @Shadow private int foodLevel;
-    @Shadow private int prevFoodLevel;
     @Shadow private float exhaustion;
     @Shadow private float saturationLevel;
     @Shadow private int foodTickTimer;
@@ -28,13 +29,13 @@ public abstract class HungerManagerMixin {
     @Unique private PlayerEntity player$how_hungry=null;
 
     @Inject(method="update",at=@At("HEAD"),cancellable=true)
-    void overhaulHunger(PlayerEntity player, CallbackInfo info) {
+    void overhaulHunger(ServerPlayerEntity player, CallbackInfo info) {
         if(!ModConfig.INSTANCE.enabled) return;
         info.cancel();
+        ServerWorld serverWorld = player.getServerWorld();
         player$how_hungry=player;
         if(!ModConfig.INSTANCE.hungerEnabled) return;
         Difficulty difficulty = player.getWorld().getDifficulty();
-        prevFoodLevel = this.foodLevel;
         if (exhaustion > 4.0F) {
             this.exhaustion -= 4.0F;
             if (saturationLevel > 0.0F) {
@@ -44,7 +45,7 @@ public abstract class HungerManagerMixin {
             }
         }
 
-        boolean bl = player.getWorld().getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)&&ModConfig.INSTANCE.hungerCanHeal;
+        boolean bl = serverWorld.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)&&ModConfig.INSTANCE.hungerCanHeal;
         if (bl && saturationLevel > 0.0F && player.canFoodHeal() && foodLevel >= 20) {
             foodTickTimer++;
             if (foodTickTimer >= 10) {
@@ -64,7 +65,7 @@ public abstract class HungerManagerMixin {
             foodTickTimer++;
             if (foodTickTimer >= 80) {
                 if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
-                    if(ModConfig.INSTANCE.hungerCanDamage) player.damage(player.getDamageSources().starve(), 1.0F);
+                    if(ModConfig.INSTANCE.hungerCanDamage) player.damage(serverWorld, player.getDamageSources().starve(), 1.0F);
                 }
                 foodTickTimer = 0;
             }

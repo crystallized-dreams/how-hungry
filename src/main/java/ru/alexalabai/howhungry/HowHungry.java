@@ -64,14 +64,12 @@ public class HowHungry implements ModInitializer {
 						Identifier id=Identifier.tryParse(ModConfig.INSTANCE.negativeEffects.get(player.getRandom().nextInt(ModConfig.INSTANCE.negativeEffects.size())));
 						if(id==null) return;
 						if(Registries.STATUS_EFFECT.get(id)==null) return;
-						Optional<StatusEffect> effect = Registries.STATUS_EFFECT.getOrEmpty(id);
+						StatusEffect effect = Registries.STATUS_EFFECT.get(id);
 
-						effect.ifPresent(statusEffect->
-							player.addStatusEffect(new StatusEffectInstance(
-                        	        Registries.STATUS_EFFECT.getEntry(statusEffect),
+						player.addStatusEffect(new StatusEffectInstance(
+								Registries.STATUS_EFFECT.getEntry(effect),
 								Math.max(ModConfig.INSTANCE.effectTime,1),0,
 									false,false,true)
-							)
 						);
 					} else if(!ModConfig.INSTANCE.giveNegativeEffectsOnlyWhenRunning||(ModConfig.INSTANCE.giveNegativeEffectsOnlyWhenRunning&&player.isSprinting()))
 						HowHungry.effectTimerKeeper.put(player.getUuid(), HowHungry.effectTimerKeeper.get(player.getUuid())-1);

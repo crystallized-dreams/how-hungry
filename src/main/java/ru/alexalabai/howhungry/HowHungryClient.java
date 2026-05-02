@@ -22,7 +22,7 @@ public class HowHungryClient implements ClientModInitializer {
         ModClientPackets.regAll();
         ClientTickEvents.END_CLIENT_TICK.register(client->{
             if(!notifiedAboutDisabledHunger&&!serverHungerEnabled&&serverEnabled) {
-                if(client.player!=null) client.player.sendMessage(Text.translatable("text.how-hungry.hunger_disabled"));
+                if(client.player!=null) client.player.sendMessage(Text.translatable("text.how-hungry.hunger_disabled"),false);
                 notifiedAboutDisabledHunger=true;
             }
         });
