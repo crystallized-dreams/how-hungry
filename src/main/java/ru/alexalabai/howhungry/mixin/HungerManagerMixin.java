@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.GameRules;
+import net.minecraft.world.rule.GameRules;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -45,7 +45,7 @@ public abstract class HungerManagerMixin {
             }
         }
 
-        boolean bl = serverWorld.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)&&ModConfig.INSTANCE.hungerCanHeal;
+        boolean bl = serverWorld.getGameRules().getValue(GameRules.NATURAL_HEALTH_REGENERATION)&&ModConfig.INSTANCE.hungerCanHeal;
         if (bl && saturationLevel > 0.0F && player.canFoodHeal() && foodLevel >= 20) {
             foodTickTimer++;
             if (foodTickTimer >= 10) {
