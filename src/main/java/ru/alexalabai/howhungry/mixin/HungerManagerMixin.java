@@ -32,10 +32,10 @@ public abstract class HungerManagerMixin {
     void overhaulHunger(ServerPlayerEntity player, CallbackInfo info) {
         if(!ModConfig.INSTANCE.enabled) return;
         info.cancel();
-        ServerWorld serverWorld = player.getServerWorld();
+        ServerWorld serverWorld = player.getEntityWorld();
         player$how_hungry=player;
         if(!ModConfig.INSTANCE.hungerEnabled) return;
-        Difficulty difficulty = player.getWorld().getDifficulty();
+        Difficulty difficulty = player.getEntityWorld().getDifficulty();
         if (exhaustion > 4.0F) {
             this.exhaustion -= 4.0F;
             if (saturationLevel > 0.0F) {
